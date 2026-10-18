@@ -107,7 +107,7 @@ A few details worth reading in the source:
 
 ## Releases
 
-Pushing a `v*` tag runs `.github/workflows/release.yml`, which tests the build and attaches `bori-island-<tag>.tar.gz` (with `index.html` at its root) to a GitHub release. [sanghyunpark.dev](https://sanghyunpark.pages.dev) deploys a pinned release at `/apps/bori-island/`.
+Publishing a GitHub release for a `v*` tag (or pushing the tag) runs `.github/workflows/release.yml`, which tests the build and attaches `bori-island-<tag>.tar.gz`, with `index.html` at its root, to the release. [sanghyunpark.dev](https://sanghyunpark.pages.dev) deploys a pinned release at `/apps/bori-island/`.
 
 ## Credits
 

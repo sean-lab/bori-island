@@ -1,13 +1,23 @@
 name: Release
 
-# Pushing a tag such as v1.0.0 publishes bori-island-v1.0.0.tar.gz (index.html at its root)
-# to a GitHub release. sanghyunpark.dev pins a version and serves it at /apps/bori-island/.
+# Publishes bori-island-<tag>.tar.gz (index.html at its root) on the GitHub release for a v* tag.
+# sanghyunpark.dev pins a version and serves it at /apps/bori-island/.
+#
+# Two ways to start it:
+#   - push a tag such as v1.0.0 (the release is created here), or
+#   - publish a release on GitHub (the archive is attached to it).
 on:
   push:
     tags: ["v*"]
+  release:
+    types: [published]
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ github.ref_name }}
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -27,9 +37,13 @@ jobs:
       - name: Package
         run: tar -czf "bori-island-${GITHUB_REF_NAME}.tar.gz" -C dist index.html
 
-      - name: Publish the release
+      - name: Attach to the release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: >
-          gh release create "$GITHUB_REF_NAME" "bori-island-${GITHUB_REF_NAME}.tar.gz"
-          --title "$GITHUB_REF_NAME" --generate-notes
+        run: |
+          asset="bori-island-${GITHUB_REF_NAME}.tar.gz"
+          if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "$asset" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "$asset" --title "$GITHUB_REF_NAME" --generate-notes
+          fi

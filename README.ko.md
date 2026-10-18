@@ -107,7 +107,7 @@ scripts/
 
 ## 릴리스
 
-`v*` 태그를 푸시하면 `.github/workflows/release.yml`이 빌드를 테스트한 뒤 `bori-island-<태그>.tar.gz`(루트에 `index.html`)를 GitHub 릴리스에 올린다. [sanghyunpark.dev](https://sanghyunpark.pages.dev)는 고정한 릴리스를 `/apps/bori-island/`에 배포한다.
+`v*` 태그로 GitHub 릴리스를 발행하면(또는 태그를 푸시하면) `.github/workflows/release.yml`이 빌드를 테스트한 뒤 `bori-island-<태그>.tar.gz`(루트에 `index.html`)를 그 릴리스에 올린다. [sanghyunpark.dev](https://sanghyunpark.pages.dev)는 고정한 릴리스를 `/apps/bori-island/`에 배포한다.
 
 ## 크레딧
 
