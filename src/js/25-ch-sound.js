@@ -295,7 +295,7 @@ function trackerDemo(host) {
   const speedR = el('input', { type: 'range', min: '3', max: '12', step: '1', value: String(SONG.speed), id: 'trk-speed', 'aria-label': tr('속도', 'Speed') });
   const speedV = el('span', { class: 'readout' });
   let soloSong = null;
-  const syncSpeed = () => { speedV.textContent = tr('한 행 ' + SONG.speed + '프레임 ≈ ', SONG.speed + ' frames per row ≈ ') + Math.round(900 / SONG.speed) + ' BPM'; };
+  const syncSpeed = () => { speedV.textContent = tr('한 행 ' + SONG.speed + '프레임 ≈ ', plural(SONG.speed, 'frame') + ' per row ≈ ') + Math.round(900 / SONG.speed) + ' BPM'; };
   speedR.addEventListener('input', () => { SONG.speed = +speedR.value; if (soloSong) soloSong.speed = SONG.speed; syncSpeed(); saveSong(); });
   playB.addEventListener('click', () => { AudioSys.unlock(); soloSong = null; setTimeout(() => AudioSys.playMusic(SONG, { owner: 'tracker' }), 30); });
   fromB.addEventListener('click', () => {

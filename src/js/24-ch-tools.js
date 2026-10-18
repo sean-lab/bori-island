@@ -326,7 +326,7 @@ function levelEditor(host) {
     if (a === b) { saveInfo.textContent = tr('기본 레벨 그대로', 'Default level, unchanged'); saveInfo.style.color = ''; return; }
     let diff = 0;
     if (a.length === b.length) for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) diff++;
-    saveInfo.textContent = tr('이 브라우저에 자동 저장됨 · ', 'Saved in this browser automatically · ') + (a.length === b.length ? tr('기본과 다른 칸 ' + diff + '개', diff + ' cells differ from the default') : tr('기본과 크기가 다름', 'size differs from the default'));
+    saveInfo.textContent = tr('이 브라우저에 자동 저장됨 · ', 'Saved in this browser automatically · ') + (a.length === b.length ? tr('기본과 다른 칸 ' + diff + '개', plural(diff, 'cell differs', 'cells differ') + ' from the default') : tr('기본과 크기가 다름', 'size differs from the default'));
     saveInfo.style.color = 'var(--signal)';
   }
   const resetB = confirmButton(tr('처음 레벨로 되돌리기', 'Reset to the original level'), tr('한 번 더 누르면 되돌림', 'Press again to reset'), () => { const before = L().toText(); ASSETS.setLevel(Level.fromText(DEFAULT_LEVEL_TEXT)); remember(before); render(); });

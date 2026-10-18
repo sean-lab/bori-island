@@ -193,7 +193,7 @@ function fsmTurnstile(host) {
       edges[id].setAttribute('marker-end', isHot ? 'url(#ts-ahHot)' : 'url(#ts-ah)');
     }
     for (const k in rowsEl) rowsEl[k].style.background = k === hot ? 'var(--marker)' : '';
-    status.textContent = tr('지금 상태: ' + NAME[state] + ' · 지나간 사람 ' + passed + '명 · 받은 동전 ' + coins + '개', 'State: ' + NAME[state] + ' · ' + passed + ' passed · ' + coins + ' coins taken');
+    status.textContent = tr('지금 상태: ' + NAME[state] + ' · 지나간 사람 ' + passed + '명 · 받은 동전 ' + coins + '개', 'State: ' + NAME[state] + ' · ' + passed + ' passed · ' + plural(coins, 'coin') + ' taken');
     logEl.innerHTML = '';
     if (!log.length) logEl.append(el('li', { text: tr('버튼을 눌러 입력을 보내 보자.', 'Press a button to send an input.'), style: { listStyle: 'none', marginLeft: '-20px' } }));
     else log.forEach((t) => logEl.append(el('li', { text: t })));

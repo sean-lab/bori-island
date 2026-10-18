@@ -2,9 +2,11 @@
 // ───────────────────────────────────────────────────────────────
 // 00 · 공용 도구
 // ───────────────────────────────────────────────────────────────
-// 언어: 빌드가 넣은 부트 스크립트가 ?lang= 또는 저장해 둔 선택을 보고 정한다
+// 언어: 빌드가 넣은 부트 스크립트가 ?lang=, 저장해 둔 선택, 브라우저 언어 순서로 보고 정한다
 const LANG = (typeof window !== 'undefined' && window.BORI_LANG) || (typeof document !== 'undefined' && document.documentElement && document.documentElement.getAttribute('data-lang')) || 'ko';
 const tr = (ko, en) => (LANG === 'en' ? en : ko);
+// 영어 문장의 개수 표현: plural(1, 'cell') → '1 cell', plural(3, 'cell') → '3 cells'. 숫자 모양은 text로 바꿀 수 있다
+const plural = (n, one, many = one + 's', text = String(n)) => text + ' ' + (n === 1 ? one : many);
 
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));

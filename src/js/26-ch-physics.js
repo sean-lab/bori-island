@@ -114,7 +114,7 @@ function physCollideLab(host) {
       phase = 1;
       const hits = probe.filter((p) => p.hit).length;
       say.textContent = PH[1] + ' · x ' + box.x.toFixed(1) + ' → ' + (box.x + box.vx).toFixed(1) + ' (Δ ' + box.vx.toFixed(2) + ')\n' +
-        (box.vx === 0 ? tr('x 속도가 0이라 검사할 것이 없다.', 'The x velocity is 0, so there is nothing to check.') : tr('앞쪽 가장자리가 닿는 열의 칸 ' + probe.length + '개를 검사했다 → 벽 ' + hits + '개와 겹침', 'Checked ' + probe.length + ' cells in the column the leading edge reaches → overlaps ' + hits + ' wall cells'));
+        (box.vx === 0 ? tr('x 속도가 0이라 검사할 것이 없다.', 'The x velocity is 0, so there is nothing to check.') : tr('앞쪽 가장자리가 닿는 열의 칸 ' + probe.length + '개를 검사했다 → 벽 ' + hits + '개와 겹침', 'Checked ' + plural(probe.length, 'cell') + ' in the column the leading edge reaches → overlaps ' + plural(hits, 'wall cell')));
     } else if (phase === 1) {
       const moved = box.x + box.vx;
       box.x = pend.x; box.vx = pend.vx;
@@ -125,7 +125,7 @@ function physCollideLab(host) {
       phase = 3;
       const hits = probe.filter((p) => p.hit).length;
       say.textContent = PH[3] + ' · y ' + box.y.toFixed(1) + ' → ' + (box.y + box.vy).toFixed(1) + ' (Δ ' + box.vy.toFixed(2) + ')\n' +
-        (box.vy === 0 ? tr('y 속도가 0이라 검사할 것이 없다.', 'The y velocity is 0, so there is nothing to check.') : tr((box.vy > 0 ? '아래' : '위') + '쪽 가장자리가 닿는 행의 칸 ' + probe.length + '개를 검사했다 → ' + hits + '개와 겹침', 'Checked ' + probe.length + ' cells in the row the ' + (box.vy > 0 ? 'bottom' : 'top') + ' edge reaches → overlaps ' + hits) + (probe.some((p) => p.oneWay) ? tr(' (통나무는 위에서 내려올 때만)', ' (logs count only when landing from above)') : ''));
+        (box.vy === 0 ? tr('y 속도가 0이라 검사할 것이 없다.', 'The y velocity is 0, so there is nothing to check.') : tr((box.vy > 0 ? '아래' : '위') + '쪽 가장자리가 닿는 행의 칸 ' + probe.length + '개를 검사했다 → ' + hits + '개와 겹침', 'Checked ' + plural(probe.length, 'cell') + ' in the row the ' + (box.vy > 0 ? 'bottom' : 'top') + ' edge reaches → overlaps ' + hits) + (probe.some((p) => p.oneWay) ? tr(' (통나무는 위에서 내려올 때만)', ' (logs count only when landing from above)') : ''));
     } else if (phase === 3) {
       box.y = pend.y; box.vy = pend.vy;
       phase = 4;

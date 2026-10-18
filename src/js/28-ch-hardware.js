@@ -437,7 +437,7 @@ function hwRecord(host) {
   function render() {
     const { seconds, pats, score } = songStats();
     const items = [
-      { label: tr('악보 (패턴 ' + pats + '개 × 4채널 × 32행)', 'Score (' + pats + ' patterns × 4 channels × 32 rows)'), bytes: score, hl: true },
+      { label: tr('악보 (패턴 ' + pats + '개 × 4채널 × 32행)', 'Score (' + plural(pats, 'pattern') + ' × 4 channels × 32 rows)'), bytes: score, hl: true },
       { label: tr('OGG, 128kbps (대략)', 'OGG at 128 kbps (approx.)'), bytes: seconds * 16000 },
       { label: tr('WAV, 44.1kHz 16비트 모노', 'WAV, 44.1 kHz 16-bit mono'), bytes: seconds * 44100 * 2 },
       { label: tr('WAV, 48kHz 16비트 스테레오', 'WAV, 48 kHz 16-bit stereo'), bytes: seconds * 48000 * 4 },
@@ -605,7 +605,7 @@ function hwMix(host) {
     let maxTogether = 0;
     for (const e of recent) { if (e.outcome === 'ignored') continue; const n = recent.filter((o) => o.outcome !== 'ignored' && o.t0 <= e.t0 && o.t1 > e.t0).length; maxTogether = Math.max(maxTogether, n); }
     stats.textContent = tr('최근 5초: 동시에 울린 효과음 최대 ' + maxTogether + '개 · 다른 효과음에 끊긴 것 ' + cut + '개 (✂) · 우선순위에 밀려 무시된 것 ' + ignored + '개 (×)',
-      'Last 5 s: up to ' + maxTogether + ' effects at once · ' + cut + ' cut off by another effect (✂) · ' + ignored + ' dropped for lower priority (×)');
+      'Last 5 s: up to ' + plural(maxTogether, 'effect') + ' at once · ' + cut + ' cut off by another effect (✂) · ' + ignored + ' dropped for lower priority (×)');
   }
   let raf = 0;
   const tick = () => { raf = requestAnimationFrame(tick); draw(); };
@@ -666,7 +666,7 @@ function hwSlowdown(host) {
     }
     meter.append(bar, el('div', { class: 'legend' },
       el('span', null, el('i', { style: { background: 'var(--viz-1)' } }), tr('기본 일 ', 'Base work ') + fmtInt(BASE)),
-      el('span', null, el('i', { style: { background: 'var(--viz-2)' } }), tr('적 ' + st.n + '마리 × ' + fmtInt(PER), st.n + ' enemies × ' + fmtInt(PER))),
+      el('span', null, el('i', { style: { background: 'var(--viz-2)' } }), tr('적 ' + st.n + '마리 × ' + fmtInt(PER), plural(st.n, 'enemy', 'enemies') + ' × ' + fmtInt(PER))),
       el('span', null, tr('한 화면 예산 ', 'Budget per frame ') + fmtInt(bud) + ' (' + (CPU[st.std] / 1e6).toFixed(2) + ' MHz ÷ ' + hz() + ')')));
     const fps = hz() / kk, speed = Math.round((fps / 60) * 100);
     verdict.innerHTML = '';
