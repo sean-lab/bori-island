@@ -71,6 +71,7 @@ Open `dist/index.html` in a browser. It's one self-contained file, so it also wo
 | `node scripts/build.mjs --lang=ko` | Same, but falls back to Korean instead of English |
 | `npm test` | Builds, then opens every chapter in both languages at desktop and phone widths in headless Chromium, failing on script errors, sideways scrolling or untranslated text. Finally it lets the self-playing demo run the whole level and checks that it reaches the goal. Run `npm install` and `npx playwright install chromium` once first. |
 | `npm run screenshots` | Regenerates the images in `docs/screenshots/` |
+| `npm run promo` | Renders the 20-second promo video (1080×1080) to `dist/promo/`, drawn by the game's own engine with its chip music. Needs ffmpeg |
 
 ## How it's put together
 
@@ -96,6 +97,7 @@ scripts/
   build.mjs           bundles everything into one HTML file
   smoke.mjs           the headless smoke test
   screenshots.mjs     regenerates the README images
+  promo/              renders the promo video, frame by frame (promo.js runs inside the page)
 ```
 
 A few details worth reading in the source:

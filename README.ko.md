@@ -71,6 +71,7 @@ node scripts/build.mjs        # dist/index.html을 만든다
 | `node scripts/build.mjs --lang=ko` | 같은 일을 하되, 언어를 정할 단서가 없을 때 영어 대신 한국어로 연다 |
 | `npm test` | 빌드한 뒤 헤드리스 Chromium으로 모든 장을 두 언어, 데스크톱과 휴대폰 폭에서 연다. 스크립트 오류, 가로 스크롤, 번역이 빠진 글자가 있으면 실패한다. 마지막으로 자동 플레이 데모가 레벨 끝까지 가는지 확인한다. 처음 한 번 `npm install`과 `npx playwright install chromium`이 필요하다 |
 | `npm run screenshots` | `docs/screenshots/`의 이미지를 다시 만든다 |
+| `npm run promo` | 20초짜리 홍보 영상(1080×1080)을 `dist/promo/`에 만든다. 화면은 게임 엔진이 직접 그리고 소리는 게임의 칩 음악이다. ffmpeg가 필요하다 |
 
 ## 구조
 
@@ -96,6 +97,7 @@ scripts/
   build.mjs           모든 것을 HTML 한 장으로 묶는다
   smoke.mjs           헤드리스 스모크 테스트
   screenshots.mjs     README 이미지를 다시 만든다
+  promo/              홍보 영상을 한 프레임씩 그린다 (promo.js는 페이지 안에서 돈다)
 ```
 
 소스에서 읽어 볼 만한 부분은 이렇다.
