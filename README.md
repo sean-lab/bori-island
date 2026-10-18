@@ -38,7 +38,7 @@ The game borrows its rules from Wonder Boy (1986): a vitality meter that drains 
 | 8 | Hardware, then and now | A VRAM tile budget, raster scrolling, integer scaling, a score vs. a recording, mixing and ducking, slowdown and frame budgets |
 | 9 | Play the game | The whole game, using every change you made in the tools |
 
-The page is fully bilingual. Add `?lang=en` or `?lang=ko` to the address, or use the language button in the sidebar.
+The page is fully bilingual. It opens in your browser's language, or add `?lang=en` or `?lang=ko` to the address, or use the language button in the sidebar.
 
 ## Screenshots
 
@@ -67,8 +67,8 @@ Open `dist/index.html` in a browser. It's one self-contained file, so it also wo
 
 | Command | What it does |
 |---|---|
-| `node scripts/build.mjs` | Bundles `src/` into `dist/index.html`, opening in English |
-| `node scripts/build.mjs --lang=ko` | Same, but opens in Korean when the address has no `?lang=` |
+| `node scripts/build.mjs` | Bundles `src/` into `dist/index.html` |
+| `node scripts/build.mjs --lang=ko` | Same, but falls back to Korean instead of English |
 | `npm test` | Builds, then opens every chapter in both languages at desktop and phone widths in headless Chromium, failing on script errors, sideways scrolling or untranslated text. Finally it lets the self-playing demo run the whole level and checks that it reaches the goal. Run `npm install` and `npx playwright install chromium` once first. |
 | `npm run screenshots` | Regenerates the images in `docs/screenshots/` |
 
@@ -103,7 +103,7 @@ A few details worth reading in the source:
 - **Fixed timestep.** Every demo runs on the same loop (`07-loop.js`): real time goes into an accumulator and is spent in 1/60 s steps, and rendering interpolates between the last two states. Speeds are in pixels per frame, as on the original hardware.
 - **Data you can read.** Sprites are written as 16 × 16 grids of hex digits, and the level is a 192 × 12 character map. The tools edit exactly this data.
 - **A chip in Web Audio.** Each tone channel is a square-wave oscillator whose frequency comes from a 10-bit register value, N, as on the real chip; noise comes from a 16-bit LFSR. The driver schedules register writes 0.12 s ahead on the audio clock. The same driver renders the song offline in Chapter 8.
-- **Two languages, one file.** Chapters hold paired `data-l="ko"` and `data-l="en"` blocks, and scripts call `tr(ko, en)`. A small boot script picks the language from `?lang=`, a saved choice, or the build default before the first paint.
+- **Two languages, one file.** Chapters hold paired `data-l="ko"` and `data-l="en"` blocks, and scripts call `tr(ko, en)`. A small boot script picks the language before the first paint: `?lang=` in the address, then the visitor's last choice, then the browser's language, then the build default.
 
 ## Releases
 

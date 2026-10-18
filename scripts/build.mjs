@@ -1,9 +1,13 @@
 #!/usr/bin/env node
 // Bundles src/ into one self-contained HTML page.
 //
-//   node scripts/build.mjs                      → dist/index.html (full document, opens in English)
-//   node scripts/build.mjs --lang=ko            → opens in Korean when the URL has no ?lang=
+//   node scripts/build.mjs                      → dist/index.html (full document)
+//   node scripts/build.mjs --lang=ko            → falls back to Korean instead of English
+//   node scripts/build.mjs --no-browser-lang    → skips the browser's language and goes straight to --lang
 //   node scripts/build.mjs --fragment --out=…   → body fragment only, for hosts that supply <html>/<head>
+//
+// The page picks its language in this order: ?lang=en|ko in the address, the choice the
+// visitor made last time, the browser's language if it is English or Korean, then --lang.
 //
 // No dependencies: the page is plain HTML, CSS and JavaScript.
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
@@ -18,6 +22,7 @@ const arg = (name, def) => {
 };
 const lang = arg("lang", "en");
 const fragment = arg("fragment", false) === true;
+const browserLang = arg("no-browser-lang", false) !== true;
 const out = path.resolve(root, arg("out", "dist/index.html"));
 if (!["en", "ko"].includes(lang)) throw new Error(`--lang must be en or ko, got ${lang}`);
 
@@ -43,8 +48,15 @@ const META = {
 };
 
 // Runs before the page content is parsed, so the right language shows on the first paint.
-const boot = `(function(){var l=${JSON.stringify(lang)};try{var q=new URLSearchParams(location.search).get('lang');` +
-  `if(q==='ko'||q==='en')l=q;else{var s=localStorage.getItem('bori:lang');if(s){s=JSON.parse(s);if(s==='ko'||s==='en')l=s;}}}catch(e){}` +
+// Each source is tried in its own try block: a sandboxed frame may refuse localStorage.
+const sources = [
+  "new URLSearchParams(location.search).get('lang')",
+  "JSON.parse(localStorage.getItem('bori:lang'))",
+  ...(browserLang ? ["((navigator.languages||[])[0]||navigator.language||'').slice(0,2).toLowerCase()"] : []),
+];
+const boot = `(function(){var l=${JSON.stringify(lang)},f=[` +
+  sources.map((s) => `function(){return ${s};}`).join(",") +
+  `];for(var i=0;i<f.length;i++){try{var v=f[i]();if(v==='en'||v==='ko'){l=v;break;}}catch(e){}}` +
   `var h=document.documentElement;h.setAttribute('data-lang',l);h.lang=l;window.BORI_LANG=l;` +
   `document.title=l==='en'?${JSON.stringify(META.en.title)}:${JSON.stringify(META.ko.title)};})();`;
 
@@ -69,4 +81,4 @@ const html = fragment
 
 mkdirSync(path.dirname(out), { recursive: true });
 writeFileSync(out, html);
-console.log(`built ${path.relative(root, out)} · ${lang}${fragment ? " · fragment" : ""} · ${(Buffer.byteLength(html) / 1024).toFixed(1)} KB · ${jsFiles.length} scripts · ${chapterFiles.length} chapters`);
+console.log(`built ${path.relative(root, out)} · ${lang}${browserLang ? " · browser language first" : ""}${fragment ? " · fragment" : ""} · ${(Buffer.byteLength(html) / 1024).toFixed(1)} KB · ${jsFiles.length} scripts · ${chapterFiles.length} chapters`);
