@@ -1,0 +1,47 @@
+<!--HEAD-->
+<title>@@TITLE@@</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="@@DESC@@">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Gaegu:wght@700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=Nanum+Gothic+Coding:wght@400;700&display=swap">
+<style>
+/*@@CSS@@*/
+</style>
+<!--BODY-->
+<script>/*@@BOOT@@*/</script>
+<div class="app">
+  <header class="topbar">
+    <canvas class="brand-mark" width="16" height="16" aria-hidden="true"></canvas>
+    <div class="tb-title"><span data-l="ko">보리 섬 개발 노트</span><span data-l="en">Bori Island Dev Notes</span><small id="tb-chapter"></small></div>
+    <button class="btn small" id="tb-menu" type="button" aria-expanded="false" aria-controls="rail"></button>
+  </header>
+
+  <nav class="rail" id="rail">
+    <div class="rail-inner">
+      <a class="brand" href="#intro">
+        <canvas class="brand-mark" width="16" height="16" aria-hidden="true"></canvas>
+        <div>
+          <div class="brand-name"><span data-l="ko">보리 섬<br>개발 노트</span><span data-l="en">Bori Island<br>Dev Notes</span></div>
+          <div class="brand-sub"><span data-l="ko">8비트 횡스크롤 액션 제작기</span><span data-l="en">Making an 8-bit side-scroller</span></div>
+        </div>
+      </a>
+      <ol class="toc" id="toc"></ol>
+      <div class="rail-foot">
+        <div class="row" style="gap:8px">
+          <button class="btn" id="sound-toggle" type="button" aria-pressed="true"></button>
+          <button class="btn" id="lang-toggle" type="button"></button>
+        </div>
+        <div class="changes" id="changes"></div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main">
+<!--@@CHAPTERS@@-->
+  </main>
+</div>
+
+<script>
+//@@JS@@
+</script>

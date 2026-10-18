@@ -1,0 +1,44 @@
+<!-- ═══════════════════════ 9. 완성 / Play ═══════════════════════ -->
+<article class="chapter" id="ch-play" data-ch="play" hidden>
+  <header class="ch-head">
+    <div class="ch-num" data-num="09" aria-hidden="true"></div>
+    <div>
+      <p class="eyebrow" data-l="ko">9장 · 완성</p>
+      <p class="eyebrow" data-l="en">Chapter 9 · The finished game</p>
+      <h1 data-l="ko">보리 섬</h1>
+      <h1 data-l="en">Bori Island</h1>
+      <p class="lead" data-l="ko">지금까지 만든 부품을 모두 합친 게임이다. 4장에서 고친 그림과 레벨, 5장의 효과음과 음악, 6장의 물리 값, 8장에서 고른 믹싱 방식이 그대로 들어가 있다. 체력이 바닥나기 전에 열매를 먹으며 섬 끝의 깃발까지 가 보자.</p>
+      <p class="lead" data-l="en">This is the game with every part put together. The art and level you edited in Chapter 4, the sound effects and music from Chapter 5, the physics values from Chapter 6, and the mixing approach you picked in Chapter 8 are all in it. Eat fruit before your vitality runs out and reach the flag at the end of the island.</p>
+    </div>
+  </header>
+  <div id="play-game"></div>
+  <div id="play-status"></div>
+
+  <h2><span class="sec">9.1</span><span data-l="ko">여기서 더 만든다면</span><span data-l="en">Where to go next</span></h2>
+  <div class="prose" data-l="ko">
+    <ul>
+      <li><b>스테이지 여러 개.</b> 레벨 데이터를 배열로 늘리고 클리어 장면에서 다음 레벨을 불러온다. 레벨마다 배경 팔레트만 바꿔도 분위기가 크게 달라진다.</li>
+      <li><b>보스.</b> 보스용 상태 기계를 하나 더 만든다. 공격 패턴 몇 개를 순서대로 돌리고, 맞을 때마다 하얗게 번쩍이게 한다.</li>
+      <li><b>경사면.</b> 타일마다 높이 표를 붙이고, y축 충돌 처리에서 발밑 칸의 높이를 읽는다.</li>
+      <li><b>게임패드.</b> 입력을 '행동'으로 바꿔 둔 덕분에 Gamepad API는 입력 모듈 한 곳에만 붙이면 된다.</li>
+      <li><b>리플레이.</b> 고정 타임스텝이라 프레임마다의 입력만 기록하면 같은 플레이를 그대로 다시 돌릴 수 있다.</li>
+    </ul>
+  </div>
+  <div class="prose" data-l="en">
+    <ul>
+      <li><b>More stages.</b> Turn the level data into an array and load the next level from the clear scene. Just changing the background palette per level changes the mood a lot.</li>
+      <li><b>A boss.</b> Give it a state machine of its own. Cycle through a few attack patterns and flash it white on every hit.</li>
+      <li><b>Slopes.</b> Attach a height table to each tile and read the height under the feet during the y-axis collision step.</li>
+      <li><b>Gamepads.</b> Because input is already mapped to actions, the Gamepad API only needs to plug into the input module.</li>
+      <li><b>Replays.</b> With a fixed timestep, recording each frame's input is enough to play the same run back exactly.</li>
+    </ul>
+  </div>
+
+  <h2><span class="sec">9.2</span><span data-l="ko">소스 코드</span><span data-l="en">Source code</span></h2>
+  <div class="prose" data-l="ko">
+    <p>이 페이지의 전체 소스는 <a href="https://github.com/sean-lab/bori-island" target="_blank" rel="noopener">GitHub의 sean-lab/bori-island</a>에 MIT 라이선스로 공개되어 있다. 라이브러리 없이 HTML, CSS, 자바스크립트만으로 만들었고, 빌드 스크립트가 파일들을 HTML 한 장으로 묶는다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The full source of this page is on GitHub at <a href="https://github.com/sean-lab/bori-island" target="_blank" rel="noopener">sean-lab/bori-island</a> under the MIT license. It's plain HTML, CSS, and JavaScript with no libraries, and a build script bundles the files into a single HTML page.</p>
+  </div>
+</article>

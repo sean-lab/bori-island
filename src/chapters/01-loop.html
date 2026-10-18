@@ -1,0 +1,104 @@
+<!-- ═══════════════════════ 1. 게임 루프 / The game loop ═══════════════════════ -->
+<article class="chapter" id="ch-loop" data-ch="loop" hidden>
+  <header class="ch-head">
+    <div class="ch-num" data-num="01" aria-hidden="true"></div>
+    <div>
+      <p class="eyebrow" data-l="ko">1장 · 게임 루프</p>
+      <p class="eyebrow" data-l="en">Chapter 1 · The game loop</p>
+      <h1 data-l="ko">1초에 60번, 같은 일을 되풀이한다</h1>
+      <h1 data-l="en">The same thing, 60 times a second</h1>
+      <p class="lead" data-l="ko">게임은 정지 화면을 아주 빨리 넘기는 기계다. 입력을 읽고, 세상을 한 걸음 진행하고, 그림을 그린다. 이 되풀이의 박자를 어떻게 맞추느냐가 점프 높이부터 리플레이까지 모든 것의 바탕이 된다.</p>
+      <p class="lead" data-l="en">A game is a machine for flipping through still pictures very fast. It reads the input, advances the world one step, and draws. How you keep the beat of that loop underlies everything from jump height to replays.</p>
+    </div>
+  </header>
+
+  <h2><span class="sec">1.1</span><span data-l="ko">세 박자: 입력, 갱신, 그리기</span><span data-l="en">Three beats: input, update, render</span></h2>
+  <div class="prose" data-l="ko">
+    <p>브라우저에서는 <code>requestAnimationFrame</code>이 박자를 준다. 모니터가 화면을 새로 그릴 때마다 함수를 한 번 불러 준다. 60Hz 모니터에서는 1/60초마다, 144Hz 모니터에서는 1/144초마다다.</p>
+    <p>가장 단순한 루프는 아래와 같다. 문제는 <mark>한 번 불릴 때 세상을 얼마나 진행할 것인가</mark>다. 매번 똑같은 거리를 움직이면 144Hz 모니터에서는 게임이 2.4배 빨라진다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>In a browser, <code>requestAnimationFrame</code> keeps the beat. It calls your function once each time the display redraws: every 1/60 of a second on a 60 Hz monitor, every 1/144 of a second on a 144 Hz one.</p>
+    <p>The simplest loop looks like this. The question is <mark>how far to advance the world on each call</mark>. Move the same distance every time and the game runs 2.4 times faster on a 144 Hz monitor.</p>
+  </div>
+  <figure class="code" data-l="ko"><figcaption><span>가장 단순한 루프</span></figcaption><pre><code class="js">function frame() {
+  readInput();   // 이번 프레임에 눌린 키
+  update();      // 세상을 한 걸음 진행
+  render();      // 지금 상태를 그린다
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);</code></pre></figure>
+  <figure class="code" data-l="en"><figcaption><span>The simplest loop</span></figcaption><pre><code class="js">function frame() {
+  readInput();   // keys pressed this frame
+  update();      // advance the world one step
+  render();      // draw the current state
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);</code></pre></figure>
+
+  <h2><span class="sec">1.2</span><span data-l="ko">지난 시간만큼 움직이면 될까</span><span data-l="en">Just move by the elapsed time?</span></h2>
+  <div class="prose" data-l="ko">
+    <p>흔한 첫 해결책은 지난 프레임부터 흐른 시간 Δt를 곱하는 것이다. <code>y += vy * dt</code>. 평균 속도는 맞아진다. 하지만 Δt가 커지면 한 번에 크게 건너뛰어서 점프 높이가 달라지고, 얇은 발판을 그냥 뚫고 지나간다.</p>
+    <p>아래 두 화면은 똑같은 점프를 똑같은 충돌 코드로 처리한다. 왼쪽은 가변 Δt, 오른쪽은 1/60초로 고정한 Δt다. 화면 갱신률을 낮추거나 렉을 일으켜 보자.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The usual first fix is to multiply by Δt, the time since the last frame: <code>y += vy * dt</code>. That gets the average speed right. But when Δt grows, each step is a big leap, so jump heights change and thin platforms get skipped entirely.</p>
+    <p>The two screens below run the same jump through the same collision code. The left one uses a variable Δt; the right one uses a Δt fixed at 1/60 of a second. Lower the refresh rate or cause a lag spike.</p>
+  </div>
+  <div id="loop-dt"></div>
+  <div class="prose" data-l="ko">
+    <p>고정 Δt는 실제로 흐른 시간을 통에 모아 두었다가 1/60초씩 잘라서 쓴다. 30Hz 화면이면 한 번 그릴 때 업데이트를 두 번 하고, 144Hz 화면이면 대부분 0번, 가끔 1번 한다. 어떤 기기에서든 세상은 정확히 같은 계단을 밟는다. 그래서 점프 높이가 같고, 같은 입력을 다시 넣으면 같은 결과가 나온다. 리플레이, 네트워크 동기화, 물리 값 조정이 모두 이 성질에 기댄다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>A fixed Δt collects the real elapsed time in a bucket and spends it in slices of 1/60 of a second. On a 30 Hz display it runs two updates per drawn frame; on a 144 Hz display it usually runs none and occasionally one. On every device the world climbs exactly the same staircase, so the jump height is the same, and feeding in the same inputs again gives the same result. Replays, network sync, and tuning physics values all rely on this.</p>
+  </div>
+
+  <h2><span class="sec">1.3</span><span data-l="ko">누산기와 보간</span><span data-l="en">The accumulator and interpolation</span></h2>
+  <div class="prose" data-l="ko">
+    <p>시간을 모아 두는 통을 누산기(accumulator)라고 부른다. 아래 타임라인은 실제 시간의 흐름이다. 세로선은 화면을 그린 순간, 점은 업데이트가 일어난 순간, 맨 아래 톱니 모양은 통에 남은 시간이다.</p>
+    <p>업데이트보다 그리기가 잦으면 같은 위치를 몇 번 그리다 한 번에 건너뛰어서 끊겨 보인다. 통에 남은 시간의 비율 α(= 누산기 ÷ 1/60초)만큼 이전 위치와 현재 위치 사이를 섞어 그리면 부드러워진다. 이것이 보간이다. 물리 갱신률을 10Hz로 낮추고 보간을 껐다 켜 보자.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The bucket of time is called the accumulator. The timeline below shows real time passing. Vertical lines are the moments the screen was drawn, dots are updates, and the sawtooth at the bottom is the time left in the bucket.</p>
+    <p>When frames are drawn more often than the world updates, the same position is drawn a few times and then jumps, which looks choppy. Drawing each object between its previous and current position, blended by the fraction α of a step left in the bucket (accumulator ÷ 1/60 s), makes the motion smooth. That's interpolation. Set the physics rate to 10 Hz and toggle interpolation.</p>
+  </div>
+  <div id="loop-timeline"></div>
+  <figure class="code" data-l="ko"><figcaption><span>이 페이지의 모든 데모가 쓰는 루프</span><span>loop.js</span></figcaption><pre><code class="js">tick(now) {
+  let dt = (now - this.last) / 1000;
+  this.last = now;
+  if (dt &gt; 0.25) dt = 0.25;           // 탭을 숨겼다 돌아와도 폭주하지 않게
+  this.acc += dt * this.timeScale;     // 흐른 시간을 통에 모은다
+  let n = 0;
+  while (this.acc &gt;= this.step) {      // 1/60초씩 잘라서
+    if (n &gt;= 6) { this.acc = 0; break; }  // 너무 밀리면 버린다
+    this.update();                     // 세상을 한 걸음
+    this.acc -= this.step;
+    n++;
+  }
+  this.render(this.acc / this.step);   // α: 다음 걸음까지 얼마나 왔나
+  requestAnimationFrame(this.tick);
+}</code></pre></figure>
+  <figure class="code" data-l="en"><figcaption><span>The loop every demo on this page uses</span><span>loop.js</span></figcaption><pre><code class="js">tick(now) {
+  let dt = (now - this.last) / 1000;
+  this.last = now;
+  if (dt &gt; 0.25) dt = 0.25;           // don't run wild after a hidden tab
+  this.acc += dt * this.timeScale;     // collect the elapsed time
+  let n = 0;
+  while (this.acc &gt;= this.step) {      // spend it in 1/60 s slices
+    if (n &gt;= 6) { this.acc = 0; break; }  // too far behind: drop it
+    this.update();                     // one step of the world
+    this.acc -= this.step;
+    n++;
+  }
+  this.render(this.acc / this.step);   // α: how far toward the next step
+  requestAnimationFrame(this.tick);
+}</code></pre></figure>
+  <p class="memo" data-l="ko">dt 상한이 없으면 탭을 10초 숨겼다 돌아온 순간 업데이트를 600번 몰아서 하느라 화면이 얼어 버린다. 따라잡는 데 실제 시간보다 오래 걸리면 밀린 일이 계속 늘어나는데, 이것을 '죽음의 나선'이라고 부른다.</p>
+  <p class="memo" data-l="en">Without a cap on dt, coming back to a tab hidden for 10 seconds runs 600 updates at once and freezes the screen. If catching up takes longer than real time, the backlog keeps growing. That's called the spiral of death.</p>
+  <div class="prose" data-l="ko">
+    <p>이 엔진에서 속도와 중력을 '픽셀/프레임' 단위로 적는 것도 고정 스텝 덕분이다. <code>vy += 0.25</code>는 "1/60초마다 아래쪽 속도가 0.25픽셀/프레임씩 늘어난다"는 뜻이고, 어느 기기에서 돌려도 같다. 옛날 게임기는 화면 주사에 맞춰 정확히 1초에 60번 코드가 돌았기 때문에 처음부터 이렇게 짰다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The fixed step is also why this engine writes speed and gravity in pixels per frame. <code>vy += 0.25</code> means "every 1/60 of a second, the downward speed grows by 0.25 pixels per frame," and it means the same on every device. Old consoles ran their code exactly 60 times a second, in step with the display, so games were written this way from the start.</p>
+  </div>
+</article>

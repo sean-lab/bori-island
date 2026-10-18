@@ -1,0 +1,24 @@
+{
+  "name": "bori-island",
+  "version": "1.0.0",
+  "description": "An interactive dev notebook that builds a Wonder Boy-style 8-bit platformer from an empty canvas.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "author": "Sanghyun Park",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sean-lab/bori-island.git"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node scripts/build.mjs && node scripts/smoke.mjs",
+    "screenshots": "node scripts/build.mjs && node scripts/screenshots.mjs docs/screenshots"
+  },
+  "devDependencies": {
+    "playwright": "1.56.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

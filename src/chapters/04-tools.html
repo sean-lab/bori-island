@@ -1,0 +1,76 @@
+<!-- ═══════════════════════ 4. 저작 도구 / Authoring tools ═══════════════════════ -->
+<article class="chapter" id="ch-tools" data-ch="tools" hidden>
+  <header class="ch-head">
+    <div class="ch-num" data-num="04" aria-hidden="true"></div>
+    <div>
+      <p class="eyebrow" data-l="ko">4장 · 리소스 저작 도구</p>
+      <p class="eyebrow" data-l="en">Chapter 4 · Authoring tools</p>
+      <h1 data-l="ko">게임보다 도구를 먼저 만든다</h1>
+      <h1 data-l="en">Build the tools before the game</h1>
+      <p class="lead" data-l="ko">게임 데이터를 코드에 직접 적으면 열매 하나 옮길 때마다 프로그래머가 필요하다. 도구를 만들면 그림과 레벨을 만드는 사람이 직접 바꾸고 바로 확인한다. 이 장의 도구로 바꾼 것은 이 페이지의 모든 게임 화면에 즉시 반영된다.</p>
+      <p class="lead" data-l="en">If game data lives in the code, moving one piece of fruit needs a programmer. With tools, the people making the art and levels change things themselves and see the result right away. Whatever you change with this chapter's tools shows up immediately on every game screen on this page.</p>
+    </div>
+  </header>
+
+  <h2><span class="sec">4.1</span><span data-l="ko">도구 → 데이터 → 엔진</span><span data-l="en">Tool → data → engine</span></h2>
+  <div class="prose" data-l="ko">
+    <p>도구는 사람이 다루기 편한 모습으로 보여 주고, 저장할 때는 엔진이 읽기 편한 모습으로 바꾼다. 픽셀 에디터는 확대된 격자를 보여 주지만 저장하는 것은 256개의 팔레트 번호다. 레벨 에디터는 그림을 보여 주지만 저장하는 것은 글자 지도와 압축된 숫자열이다. 둘 사이의 변환 코드가 작을수록 도구를 고치기 쉽다.</p>
+    <p>좋은 도구의 조건은 단순하다. 바꾼 결과를 몇 초 안에 게임 속에서 확인할 수 있어야 한다. 이 장의 에디터는 모두 그렇게 만들었다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>A tool presents data in a form people find easy to work with, and saves it in a form the engine finds easy to read. The pixel editor shows an enlarged grid but saves 256 palette numbers. The level editor shows pictures but saves a character map and a compressed list of numbers. The smaller the conversion code between the two, the easier the tool is to change.</p>
+    <p>The test of a good tool is simple: you should see your change in the game within seconds. Every editor in this chapter works that way.</p>
+  </div>
+
+  <h2><span class="sec">4.2</span><span data-l="ko">픽셀 에디터</span><span data-l="en">The pixel editor</span></h2>
+  <div class="prose" data-l="ko">
+    <p>칸을 누르면 고른 번호가 칠해진다. 연필, 지우개(0번 = 투명), 채우기, 스포이드, 좌우 대칭 그리기, 이전 프레임 겹쳐 보기(어니언 스킨), 되돌리기를 넣었다. 굵은 선은 하드웨어 타일 경계인 8픽셀마다 긋는다. 오른쪽 미리보기는 지금 고치는 시트로 애니메이션을 돌린다. 시트를 바꾸면 적과 아이템도 고칠 수 있다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>Select a cell to paint it with the chosen number. The editor has a pencil, an eraser (0 = transparent), fill, an eyedropper, mirrored drawing, onion skinning (the previous frame shown faintly underneath), and undo. The thick lines mark the 8-pixel boundaries of hardware tiles. The preview on the right animates the sheet you're editing. Switch sheets to edit the enemies and items too.</p>
+  </div>
+  <div id="tool-pixel"></div>
+  <p class="memo" data-l="ko">보리의 옷을 파랗게 칠하고 9장에 가 보자. 게임 속 보리의 옷도 파랗다.</p>
+  <p class="memo" data-l="en">Paint Bori's shirt blue, then visit Chapter 9. His shirt is blue in the game too.</p>
+
+  <h2><span class="sec">4.3</span><span data-l="ko">오토타일</span><span data-l="en">Autotiling</span></h2>
+  <div class="prose" data-l="ko">
+    <p>이웃 네 칸이 같은 땅인지를 비트 하나씩으로 적는다. 위 1, 오른쪽 2, 아래 4, 왼쪽 8. 네 비트를 더한 0~15가 그 칸의 모양 번호다. 아래 격자를 눌러 땅을 칠하고 지워 보자. 숫자가 바뀌며 잔디와 가장자리가 저절로 붙는다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>Record with one bit each whether the four neighbors are also ground: up 1, right 2, down 4, left 8. The four bits add up to a number from 0 to 15, the cell's shape number. Select cells in the grid below to paint and erase ground. The numbers change, and grass and edges appear on their own.</p>
+  </div>
+  <div id="tool-autotile"></div>
+  <figure class="code" data-l="ko"><figcaption><span>마스크 계산</span><span>tiles.js</span></figcaption><pre><code class="js">const same = (x, y) =&gt; level.tile(x, y) === GROUND;
+const mask = (same(tx, ty - 1) ? 1 : 0)    // 위
+           | (same(tx + 1, ty) ? 2 : 0)    // 오른쪽
+           | (same(tx, ty + 1) ? 4 : 0)    // 아래
+           | (same(tx - 1, ty) ? 8 : 0);   // 왼쪽
+return groundTiles[mask];</code></pre></figure>
+  <figure class="code" data-l="en"><figcaption><span>Computing the mask</span><span>tiles.js</span></figcaption><pre><code class="js">const same = (x, y) =&gt; level.tile(x, y) === GROUND;
+const mask = (same(tx, ty - 1) ? 1 : 0)    // up
+           | (same(tx + 1, ty) ? 2 : 0)    // right
+           | (same(tx, ty + 1) ? 4 : 0)    // down
+           | (same(tx - 1, ty) ? 8 : 0);   // left
+return groundTiles[mask];</code></pre></figure>
+
+  <h2><span class="sec">4.4</span><span data-l="ko">레벨 에디터</span><span data-l="en">The level editor</span></h2>
+  <div class="prose" data-l="ko">
+    <p>지형 타일이나 물체를 고른 뒤 지도에 칠한다. 아래 띠 지도를 누르면 그 위치로 이동한다. '여기서 테스트'를 누르면 같은 자리에서 바로 플레이가 시작된다. 편집과 플레이 사이에 내보내기나 빌드 같은 단계가 없다는 점이 핵심이다.</p>
+    <p>바꾼 레벨은 이 브라우저에 자동으로 저장되어 다른 장의 게임에도 쓰인다. 실수했다면 되돌리기(Ctrl+Z)를 쓰고, 처음부터 다시 하려면 '처음 레벨로 되돌리기'를 두 번 누른다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>Choose a terrain tile or an object and paint it onto the map. Select a spot on the strip map below to jump there. "Test from here" starts playing right at that spot. The point is that there's no export or build step between editing and playing.</p>
+    <p>Your edits are saved in this browser automatically and used by the games in other chapters. If you make a mistake, use undo (Ctrl+Z); to start over, press "Reset to the original level" twice.</p>
+  </div>
+  <div id="tool-level"></div>
+
+  <h2><span class="sec">4.5</span><span data-l="ko">저장 형식</span><span data-l="en">The file format</span></h2>
+  <div class="prose" data-l="ko">
+    <p>처음 레벨은 텍스트 에디터로 그렸다. 글자 하나가 한 칸이다. 사람이 읽기 좋고, 버전 관리 도구에서 바뀐 곳이 잘 보인다. 게임에 넣을 때는 숫자로 바꾸고 압축한다. 같은 타일이 이어지는 구간을 (개수, 타일) 쌍으로 적는 런 렝스 인코딩(RLE)이다. 세로 열 단위로 묶은 이유는 스크롤하며 새로 보이는 열만 풀면 되기 때문이다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The original level was drawn in a text editor, one character per cell. It's easy for people to read, and version control shows exactly what changed. For the game it's turned into numbers and compressed with run-length encoding (RLE), which writes each run of identical tiles as a (count, tile) pair. Runs go down the columns because a scrolling game only needs to unpack the columns coming into view.</p>
+  </div>
+  <div id="tool-format"></div>
+</article>

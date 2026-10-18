@@ -1,0 +1,69 @@
+<!-- ═══════════════════════ 3. 배경 / Backgrounds ═══════════════════════ -->
+<article class="chapter" id="ch-background" data-ch="background" hidden>
+  <header class="ch-head">
+    <div class="ch-num" data-num="03" aria-hidden="true"></div>
+    <div>
+      <p class="eyebrow" data-l="ko">3장 · 타일맵, 패럴랙스, 카메라</p>
+      <p class="eyebrow" data-l="en">Chapter 3 · Tile maps, parallax, camera</p>
+      <h1 data-l="ko">먼 산은 천천히, 땅은 빠르게</h1>
+      <h1 data-l="en">Distant mountains slow, the ground fast</h1>
+      <p class="lead" data-l="ko">3,072픽셀 길이의 섬을 그림 한 장으로 들고 다니지 않는다. 16×16 타일 몇 종류를 지도에 따라 찍는다. 그 뒤로 속도가 다른 배경 여러 장을 겹쳐 깊이를 만들고, 카메라가 보리를 따라간다.</p>
+      <p class="lead" data-l="en">We don't carry a 3,072-pixel island around as one picture. We stamp a handful of 16 × 16 tiles according to a map. Behind it, several background layers moving at different speeds create depth, and a camera follows Bori.</p>
+    </div>
+  </header>
+
+  <h2><span class="sec">3.1</span><span data-l="ko">타일맵: 숫자로 된 지도</span><span data-l="en">Tile maps: a map made of numbers</span></h2>
+  <div class="prose" data-l="ko">
+    <p>레벨은 가로 192칸, 세로 12칸의 숫자 배열이다. 숫자는 타일 종류이고, 종류마다 '단단함', '위에서만 밟힘', '닿으면 위험' 같은 속성이 붙는다. 그림과 규칙이 같은 번호로 묶여 있으니 충돌 판정은 지도에서 숫자 하나를 읽는 일로 끝난다. 아래 지도에서 칸을 눌러 보자.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>The level is an array of numbers, 192 cells wide and 12 tall. Each number is a tile type, and each type carries properties such as solid, one-way from above, or hazard. Since the picture and the rules share the same number, a collision check is just reading one number from the map. Select cells on the map below.</p>
+  </div>
+  <div id="bg-tilemap"></div>
+  <div class="prose" data-l="ko">
+    <p>땅 칸은 위, 오른쪽, 아래, 왼쪽 이웃이 같은 땅인지에 따라 모양이 바뀐다. 위가 비면 잔디를 올리고, 옆이 비면 가장자리를 어둡게 칠한다. 레벨을 만드는 사람은 '땅'만 칠하면 되고 모양은 엔진이 고른다. 4장에서 직접 만져 본다.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>A ground cell changes shape depending on whether its neighbors above, right, below, and left are also ground. With nothing above it gets grass; with an open side it gets a darker edge. A level designer just paints "ground" and the engine picks the shape. You'll try it yourself in Chapter 4.</p>
+  </div>
+
+  <h2><span class="sec">3.2</span><span data-l="ko">패럴랙스: 속도로 만드는 깊이</span><span data-l="en">Parallax: depth from speed</span></h2>
+  <div class="prose" data-l="ko">
+    <p>달리는 차창 밖을 보면 가까운 것은 빨리, 먼 것은 느리게 지나간다. 배경 레이어마다 카메라 이동량에 다른 배율을 곱하면 같은 효과가 난다. 이 게임은 구름 0.1, 먼 산 0.25, 언덕 0.5, 타일 1.0이다. 배율을 바꿔 보고, 레이어를 펼쳐서 겹친 모습을 확인해 보자.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>From the window of a moving car, nearby things rush past and distant ones drift by slowly. Multiplying the camera movement by a different factor for each background layer gives the same effect. This game uses 0.1 for the clouds, 0.25 for the mountains, 0.5 for the hills, and 1.0 for the tiles. Change the factors, and spread the layers out to see how they stack.</p>
+  </div>
+  <div id="bg-parallax"></div>
+  <figure class="code" data-l="ko"><figcaption><span>레이어 하나 그리기 (폭 512픽셀을 이어 붙여 반복)</span><span>tiles.js</span></figcaption><pre><code class="js">const off = Math.floor((camX * factor) % 512);
+ctx.drawImage(layer, -off, 0);        // 왼쪽 조각
+ctx.drawImage(layer, 512 - off, 0);   // 이어지는 오른쪽 조각</code></pre></figure>
+  <figure class="code" data-l="en"><figcaption><span>Drawing one layer (a 512-pixel strip, repeated)</span><span>tiles.js</span></figcaption><pre><code class="js">const off = Math.floor((camX * factor) % 512);
+ctx.drawImage(layer, -off, 0);        // left piece
+ctx.drawImage(layer, 512 - off, 0);   // the piece that continues it</code></pre></figure>
+  <p class="memo" data-l="ko">진짜 마스터 시스템에는 배경 레이어가 한 장뿐이다. 그래서 화면을 그리는 도중 특정 줄에서 가로 스크롤 값을 바꿔 위아래 띠가 다른 속도로 움직이게 했다. 래스터 스크롤이라는 요령이다. 8장에서 직접 본다.</p>
+  <p class="memo" data-l="en">The real Master System has just one background layer. Games changed the horizontal scroll value partway down the screen so that bands moved at different speeds. The trick is called raster scrolling, and Chapter 8 shows it in action.</p>
+
+  <h2><span class="sec">3.3</span><span data-l="ko">카메라: 언제 따라갈 것인가</span><span data-l="en">The camera: when to follow</span></h2>
+  <div class="prose" data-l="ko">
+    <p>카메라가 캐릭터를 늘 정중앙에 두면 작은 움직임에도 화면이 흔들려 어지럽다. 화면 안에 '데드존'을 두고 캐릭터가 그 밖으로 나갈 때만 따라간다. 원더보이처럼 앞으로만 스크롤하게 막으면 지나온 길로 돌아갈 수 없다. 레벨 설계가 단순해지고, 지나간 적을 계속 관리할 필요도 없다. 화면을 클릭하고 움직여 보자.</p>
+  </div>
+  <div class="prose" data-l="en">
+    <p>A camera that keeps the character dead center shakes the screen with every small move, which is dizzying. Instead, put a dead zone in the screen and follow only when the character leaves it. If the screen only scrolls forward, as in Wonder Boy, there's no going back. That keeps level design simple, and enemies you've passed never need managing again. Click the screen and move around.</p>
+  </div>
+  <div id="bg-camera"></div>
+  <figure class="code" data-l="ko"><figcaption><span>데드존 카메라</span><span>world.js</span></figcaption><pre><code class="js">const sx = playerX - cam.x;                 // 화면 안에서 보리의 위치
+if (sx &gt; deadRight) target = playerX - deadRight;
+else if (sx &lt; deadLeft) target = playerX - deadLeft;
+cam.x += (target - cam.x) * smooth;         // 1이면 즉시, 작을수록 느긋하게
+if (oneWay) cam.x = Math.max(cam.x, cam.minX);  // 뒤로는 못 간다
+cam.x = clamp(cam.x, 0, levelWidth - 256);
+cam.minX = Math.max(cam.minX, cam.x);</code></pre></figure>
+  <figure class="code" data-l="en"><figcaption><span>A dead-zone camera</span><span>world.js</span></figcaption><pre><code class="js">const sx = playerX - cam.x;                 // Bori's position on screen
+if (sx &gt; deadRight) target = playerX - deadRight;
+else if (sx &lt; deadLeft) target = playerX - deadLeft;
+cam.x += (target - cam.x) * smooth;         // 1 = instant, smaller = lazier
+if (oneWay) cam.x = Math.max(cam.x, cam.minX);  // never scroll back
+cam.x = clamp(cam.x, 0, levelWidth - 256);
+cam.minX = Math.max(cam.minX, cam.x);</code></pre></figure>
+</article>
